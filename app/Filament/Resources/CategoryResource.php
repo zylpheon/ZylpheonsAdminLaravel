@@ -28,11 +28,6 @@ class CategoryResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->rows(3)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('product_count')
-                    ->numeric()
-                    ->default(0)
-                    ->disabled()
-                    ->dehydrated(false),
             ]);
     }
 
@@ -48,9 +43,10 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->limit(50)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('product_count')
-                    ->sortable()
-                    ->label('Products'),
+                Tables\Columns\TextColumn::make('products_count')
+                    ->counts('products')
+                    ->label('Products')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -58,7 +54,7 @@ class CategoryResource extends Resource
             ])
             ->filters([
                 Tables\Filters\Filter::make('has_products')
-                    ->query(fn($query) => $query->where('product_count', '>', 0))
+                    ->query(fn($query) => $query->has('products'))
                     ->label('Has Products'),
             ])
             ->actions([
